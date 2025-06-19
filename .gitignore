@@ -1,0 +1,12 @@
+/node_modules
+.env.local
+
+<<<<<<< HEAD
+.env
+=======
+<<<<<<< HEAD
+.env
+=======
+.env
+>>>>>>> cc9cd60a82d62685b94a99353ae81b8f0e2bf6d0
+>>>>>>> 3a22b4418bccc21885a18f16d22ae8b56ddcbaec

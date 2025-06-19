@@ -1,0 +1,240 @@
+openapi: 3.0.3
+info:
+  title: SEO Analytics API
+  version: 1.0.0
+tags:
+  - name: Models
+components:
+  schemas:
+
+    TechstackChat:
+      type: object
+      required:
+        - clerkUserId
+        - sessionId
+        - history
+      properties:
+        clerkUserId:
+          type: string
+        sessionId:
+          type: string
+        mode:
+          type: string
+          enum: [improve]
+          default: improve
+        history:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum: [user, assistant]
+              content:
+                type: string
+        createdAt:
+          type: string
+          format: date-time
+        lastAccessed:
+          type: string
+          format: date-time
+
+    SeoReport:
+      type: object
+      required:
+        - clerkUserId
+        - domain
+      properties:
+        clerkUserId:
+          type: string
+        domain:
+          type: string
+        scanDate:
+          type: string
+          format: date-time
+        phraseResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhraseResult'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PhraseResult:
+      type: object
+      required:
+        - phrase
+        - jid
+      properties:
+        phrase:
+          type: string
+        jid:
+          type: string
+        rawResponse:
+          type: object
+        scores:
+          type: object
+          properties:
+            rankingPosition:
+              type: number
+              default: 0
+            keywordRelevance:
+              type: number
+              default: 0
+            richSnippets:
+              type: number
+              default: 0
+            urlStructure:
+              type: number
+              default: 0
+            visibility:
+              type: number
+              default: 0
+            competitorAnalysis:
+              type: number
+              default: 0
+            paginationStrength:
+              type: number
+              default: 0
+            total:
+              type: number
+              default: 0
+
+    WebsiteHistory:
+      type: object
+      required:
+        - userId
+        - url
+        - action
+      properties:
+        userId:
+          type: string
+        url:
+          type: string
+        seoReport:
+          type: object
+        seoRecommendations:
+          type: array
+          items:
+            type: object
+        action:
+          type: string
+          enum: [Analyzed, Updated, Deleted]
+        timestamp:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SeoRecommendation:
+      type: object
+      required:
+        - clerkUserId
+        - domain
+        - seoReport
+        - recommendation
+      properties:
+        clerkUserId:
+          type: string
+        domain:
+          type: string
+        seoReport:
+          type: string
+        recommendation:
+          type: string
+        action:
+          type: string
+          default: Analyzed
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    User:
+      type: object
+      required:
+        - clerkUserId
+        - name
+        - username
+        - email
+      properties:
+        clerkUserId:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        image:
+          type: string
+        isVerified:
+          type: boolean
+        membership:
+          type: string
+          enum: [premium, freemium]
+          default: freemium
+        stripe:
+          type: object
+          properties:
+            customerId:
+              type: string
+            subscriptionId:
+              type: string
+            isActive:
+              type: boolean
+            plan:
+              type: string
+              enum: [basic, pro, enterprise]
+        loginCount:
+          type: number
+        weeklyWebsiteLimit:
+          type: number
+        lastResetDate:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    WebsiteVector:
+      type: object
+      required:
+        - websiteUrl
+        - embeddings
+        - textData
+        - metadata
+      properties:
+        websiteUrl:
+          type: string
+        embeddings:
+          type: array
+          items:
+            type: number
+        textData:
+          type: string
+        metadata:
+          type: object
+          properties:
+            userId:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            lastUpdated:
+              type: string
+              format: date-time

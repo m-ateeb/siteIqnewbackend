@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: SiteIQ Tech Stack Recommendation API
+  description: API for recommending or improving a technology stack based on user goals or an existing website.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000/api/
+
+tags:
+  - name: Tech Stack
+    description: Recommend or improve web tech stacks based on use case and performance/SEO priorities
+
+paths:
+  /api/techstack/recommend:
+    post:
+      summary: Recommend a new tech stack based on goals
+      tags: [Tech Stack]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - useCase
+                - seoFocused
+                - performanceFocused
+              properties:
+                useCase:
+                  type: string
+                  example: ecommerce platform
+                seoFocused:
+                  type: boolean
+                  example: true
+                performanceFocused:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Tech stack recommendation returned
+        '400':
+          description: Missing or invalid input
+        '500':
+          description: Recommendation process failed
+
+  /api/techstack/improve:
+    post:
+      summary: Suggest improvements to an existing website’s tech stack
+      tags: [Tech Stack]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - websiteUrl
+                - useCase
+                - seoFocused
+                - performanceFocused
+              properties:
+                websiteUrl:
+                  type: string
+                  example: https://example.com
+                useCase:
+                  type: string
+                  example: blog
+                seoFocused:
+                  type: boolean
+                  example: false
+                performanceFocused:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Tech stack improvement recommendation returned
+        '400':
+          description: Missing or invalid input
+        '500':
+          description: Website analysis failed

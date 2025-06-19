@@ -1,0 +1,146 @@
+paths:
+  /api/history/{userId}:
+    get:
+      summary: Get full history for a user
+      tags:
+        - History
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user
+          schema:
+            type: string
+      responses:
+        200:
+          description: Full website history for the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HistoryEntry'
+        404:
+          description: User not found
+        500:
+          description: Server error
+
+  /api/history/{userId}/{websiteUrl}:
+    get:
+      summary: Get history for a specific website
+      tags:
+        - History
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: websiteUrl
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: History for the specified website
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HistoryEntry'
+        404:
+          description: User not found
+        500:
+          description: Server error
+
+  /api/history/{userId}/clear:
+    delete:
+      summary: Clear all history for a user
+      tags:
+        - History
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: History cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: History cleared successfully.
+        404:
+          description: User not found
+        500:
+          description: Server error
+
+  /api/history/{userId}/{historyId}:
+    delete:
+      summary: Delete a specific history entry by its ID
+      tags:
+        - History
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: historyId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: History entry deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: History entry deleted successfully.
+        404:
+          description: User not found
+        500:
+          description: Server error
+
+components:
+  schemas:
+    HistoryEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        url:
+          type: string
+          example: "https://example.com"
+        seoReport:
+          type: object
+          description: Original SEO report (structure depends on input)
+        seoRecommendations:
+          type: array
+          items:
+            type: string
+        action:
+          type: string
+          example: "Analyzed"
+        websiteId:
+          type: string
+          example: "66227d232c1f3a23c1a9a9e2"

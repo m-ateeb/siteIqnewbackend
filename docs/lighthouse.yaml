@@ -1,0 +1,192 @@
+openapi: 3.0.0
+info:
+  title: SiteIQ Lighthouse Reports API
+  version: 1.0.0
+  description: API for analyzing websites using Lighthouse and storing SEO reports scoped by user and website.
+
+servers:
+  - url: http://localhost:5000/api/
+
+tags:
+  - name: Lighthouse SEO Reports
+    description: Lighthouse-based SEO reports and performance audits
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    LighthouseData:
+      type: object
+      properties:
+        logs:
+          type: array
+          items:
+            type: string
+        error:
+          type: object
+        lighthouseReport:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    SeoReport:
+      type: object
+      properties:
+        _id:
+          type: string
+        clerkUserId:
+          type: string
+        website:
+          type: string
+          example: "60c72b2f9b1d8c4f4c8b4567"
+        phraseResults:
+          type: array
+          items:
+            type: object
+        lighthouse:
+          $ref: '#/components/schemas/LighthouseData'
+        createdAt:
+          type: string
+          format: date-time
+
+    AnalyzeRequest:
+      type: object
+      required:
+        - domain
+      properties:
+        domain:
+          type: string
+          example: "example.com"
+
+paths:
+  /api/lighthouse/analyze:
+    post:
+      summary: Start Lighthouse and SEO analysis for a given domain
+      tags: [Lighthouse SEO Reports]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyzeRequest'
+      responses:
+        '202':
+          description: Analysis started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Analysis started
+                  reportId:
+                    type: string
+        '400':
+          description: Missing required field domain
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /api/lighthouse:
+    get:
+      summary: Get all Lighthouse SEO reports for the authenticated user
+      tags: [Lighthouse SEO Reports]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Array of reports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SeoReport'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /api/lighthouse/{id}:
+    get:
+      summary: Get a single Lighthouse SEO report by ID
+      tags: [Lighthouse SEO Reports]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The report ID
+      responses:
+        '200':
+          description: Report found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeoReport'
+        '404':
+          description: Report not found
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update a Lighthouse SEO report by ID
+      tags: [Lighthouse SEO Reports]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The report ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Fields to update
+      responses:
+        '200':
+          description: Report updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeoReport'
+        '404':
+          description: Report not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete a Lighthouse SEO report by ID
+      tags: [Lighthouse SEO Reports]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The report ID
+      responses:
+        '200':
+          description: Report deleted successfully
+        '404':
+          description: Report not found
+        '500':
+          description: Internal server error

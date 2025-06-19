@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: SiteIQ SEO Recommendation API
+  version: 1.0.0
+  description: API for generating, retrieving, and deleting AI-driven SEO recommendations for websites tied to user accounts.
+
+servers:
+  - url: http://localhost:5000/api/
+
+tags:
+  - name: SEO Recommendations
+    description: Manage AI-generated SEO suggestions per user and website
+
+paths:
+  /api/seo/generate:
+    post:
+      summary: Generate new SEO recommendations for a website
+      tags: [SEO Recommendations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - websiteUrl
+                - seoReport
+              properties:
+                userId:
+                  type: string
+                  example: "663ae78925f9ba2944cd8b12"
+                websiteUrl:
+                  type: string
+                  example: "https://example.com"
+                seoReport:
+                  type: object
+                  description: Raw SEO report object
+                  example:
+                    titleTag: "Missing"
+                    metaDescription: "Too short"
+                    crawlErrors: 3
+      responses:
+        '200':
+          description: SEO recommendation successfully generated and saved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  seoRecommendation:
+                    type: string
+        '400':
+          description: Missing input fields
+        '500':
+          description: Internal server or AI failure
+
+  /api/seo/{userId}:
+    get:
+      summary: Get all SEO recommendations for all websites of a user
+      tags: [SEO Recommendations]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of SEO recommendations grouped by website
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    websiteUrl:
+                      type: string
+                    seoRecommendations:
+                      type: array
+                      items:
+                        type: string
+        '404':
+          description: User not found
+        '500':
+          description: Server error
+
+  /api/seo/{userId}/{websiteUrl}:
+    get:
+      summary: Get SEO recommendations for a specific website
+      tags: [SEO Recommendations]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: websiteUrl
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: SEO recommendations for the given website
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  websiteUrl:
+                    type: string
+                  seoRecommendations:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: User or website not found
+        '500':
+          description: Server error
+
+    delete:
+      summary: Delete the last SEO recommendation from a specific website
+      tags: [SEO Recommendations]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: websiteUrl
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Last recommendation deleted
+        '400':
+          description: No recommendations to delete
+        '404':
+          description: User or website not found
+        '500':
+          description: Internal server error

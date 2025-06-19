@@ -1,0 +1,89 @@
+openapi: 3.0.0
+info:
+  title: SiteIQ User API
+  description: Authenticated user profile and subscription endpoints.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000/api/
+
+tags:
+  - name: User
+    description: Authenticated user account, reports, and subscription management
+
+paths:
+  /user/profile:
+    get:
+      summary: Get the authenticated user's profile
+      tags: [User]
+      responses:
+        '200':
+          description: User profile returned
+        '500':
+          description: Server error
+
+    put:
+      summary: Update the authenticated user's profile
+      tags: [User]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                username:
+                  type: string
+                  example: johndoe123
+                image:
+                  type: string
+                  example: https://example.com/avatar.jpg
+                phoneNumber:
+                  type: string
+                  example: "+1234567890"
+                membership:
+                  type: string
+                  enum: [premium, freemium]
+                  example: premium
+      responses:
+        '200':
+          description: Profile updated successfully
+        '400':
+          description: Invalid membership type
+        '500':
+          description: Server error
+
+  /user:
+    delete:
+      summary: Permanently delete the authenticated user
+      tags: [User]
+      responses:
+        '200':
+          description: User account deleted
+        '500':
+          description: Server error
+
+  /user/seo-reports:
+    get:
+      summary: Get the authenticated user's SEO reports
+      tags: [User]
+      responses:
+        '200':
+          description: User's SEO reports returned
+        '500':
+          description: Server error
+
+  /user/subscription:
+    get:
+      summary: Get the authenticated user's subscription status
+      tags: [User]
+      responses:
+        '200':
+          description: User's subscription data returned
+        '500':
+          description: Server error
+
+

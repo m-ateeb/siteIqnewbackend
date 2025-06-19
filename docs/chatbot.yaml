@@ -1,0 +1,92 @@
+paths:
+  /api/chat/chat:
+    post:
+      summary: Chat with the AI about a website
+      tags:
+        - Chat
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - websiteUrl
+                - userMessage
+              properties:
+                websiteUrl:
+                  type: string
+                  format: uri
+                  example: "https://example.com"
+                userMessage:
+                  type: string
+                  example: "How can I improve SEO for my homepage?"
+      responses:
+        '200':
+          description: Successfully responded to the chat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  response:
+                    type: string
+                    example: "You can improve your SEO by adding meta descriptions and optimizing keywords."
+                  message:
+                    type: string
+                    example: "Chat processed successfully!"
+        '400':
+          description: Missing websiteUrl or userMessage
+        '403':
+          description: Chat limit reached
+        '404':
+          description: Website not found
+        '500':
+          description: Internal server error
+
+  /api/chat/history/{websiteUrl}:
+    get:
+      summary: Get chat history for a specific website
+      tags:
+        - Chat
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: websiteUrl
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uri
+            example: "https://example.com"
+      responses:
+        '200':
+          description: Successfully fetched chat history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  chatHistory:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        question:
+                          type: string
+                        answer:
+                          type: string
+        '400':
+          description: Missing website URL
+        '404':
+          description: Website not found
+        '500':
+          description: Internal server error
