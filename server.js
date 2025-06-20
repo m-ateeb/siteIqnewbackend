@@ -39,7 +39,13 @@ const PORT = process.env.PORT || 4500;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000', // Or '*' for testing
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
+    }
+  },
   credentials: true
 }));
 
